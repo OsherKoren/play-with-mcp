@@ -1,7 +1,7 @@
 default_language_version:
     python: python3.13
 
-default_stages: [pre-commit, pre-push]
+default_stages: [commit, push]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -25,7 +25,7 @@ repos:
     rev: v3.15.2
     hooks:
       - id: pyupgrade
-        args: ["--py313-plus"]
+        args: ["--py312-plus"]
 
   - repo: https://github.com/psf/black
     rev: 24.3.0
