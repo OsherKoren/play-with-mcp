@@ -26,3 +26,7 @@ test = [
 profile = "black"
 src_paths = ["expense_tracker_mcp_server"]
 honor_noqa = true
+
+[tool.pylint]
+#ignore-paths = "./expense_tracker_mcp_server/tests"
+fail-under = '9.0'
