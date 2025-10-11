@@ -1,0 +1,56 @@
+default_language_version:
+    python: python3.13
+
+default_stages: [pre-commit, pre-push]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: check-yaml
+        exclude: ^(layers/|cdk.out/|build/)
+
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: "0.29.0"
+    hooks:
+      - id: check-github-workflows
+        args: ["--verbose"]
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.2
+    hooks:
+      - id: pyupgrade
+        args: ["--py313-plus"]
+
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        language_version: python3.13
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.9.0
+    hooks:
+      - id: mypy
+        args: [ --config-file=pyproject.toml ]
+        files: ^expense_tracker_mcp_server/.*\.py$
+        exclude: (^asset\..*|venv|WORKSPACE|tests)
+
+
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: poetry run pylint --output-format=text --reports=y $(git ls-files '*.py' | grep -v '/tests/')
+        language: system
+        types: [python]

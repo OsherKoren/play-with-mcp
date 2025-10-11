@@ -1,8 +1,8 @@
 """Setup script for initializing the database."""
 
+import random
 import sqlite3
 from datetime import date, timedelta
-import random
 
 # Connect to (or create) SQLite database
 conn = sqlite3.connect("expense_tracker_mcp_server/resources/expenses.db")
@@ -12,7 +12,8 @@ cursor = conn.cursor()
 cursor.execute("DROP TABLE IF EXISTS expenses")
 
 # Create the expenses table
-cursor.execute("""
+cursor.execute(
+    """
 CREATE TABLE expenses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date TEXT NOT NULL,
@@ -20,7 +21,8 @@ CREATE TABLE expenses (
     description TEXT,
     amount REAL NOT NULL
 )
-""")
+"""
+)
 
 # Define sample categories and descriptions
 categories = {
@@ -29,7 +31,7 @@ categories = {
     "Entertainment": ["Movie", "Streaming subscription", "Concert ticket"],
     "Utilities": ["Electric bill", "Water bill", "Internet plan"],
     "Health": ["Pharmacy", "Doctor visit", "Gym membership"],
-    "Shopping": ["Clothes", "Electronics", "Books"]
+    "Shopping": ["Clothes", "Electronics", "Books"],
 }
 
 # Generate 20 demo expenses for October 2025
@@ -42,15 +44,16 @@ for i in range(20):
     random_day = start_date + timedelta(days=random.randint(0, 29))
     amount = round(random.uniform(10, 250), 2)
 
-    demo_expenses.append(
-        (str(random_day), random_category, description, amount)
-    )
+    demo_expenses.append((str(random_day), random_category, description, amount))
 
 # Insert demo data
-cursor.executemany("""
+cursor.executemany(
+    """
 INSERT INTO expenses (date, category, description, amount)
 VALUES (?, ?, ?, ?)
-""", demo_expenses)
+""",
+    demo_expenses,
+)
 
 conn.commit()
 
