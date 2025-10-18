@@ -78,7 +78,7 @@ async def analyze_total_for_month(month: int):
     total = await queries.select_total_expenses_for_month(month)
     user_prompt = prompt_total_for_month(month)
     full_prompt = build_prompt(user_prompt)
-    return {"month": month, "total": total, "prompt": full_prompt}
+    return f"Month {month:02d} total: {total}"
 
 
 @mcp.tool()
@@ -87,7 +87,7 @@ async def analyze_total_for_month_and_category(month: int, category: str):
     total = await queries.select_total_expenses_for_month_and_category(month, category)
     user_prompt = prompt_total_for_month_and_category(month, category)
     full_prompt = build_prompt(user_prompt)
-    return {"month": month, "category": category, "total": total, "prompt": full_prompt}
+    return f"Month {month:02d}, category: {category}, total: {total}"
 
 
 # --- Backwards-compatible general prompt (kept for convenience) ---
