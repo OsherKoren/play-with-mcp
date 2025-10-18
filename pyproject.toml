@@ -1,14 +1,20 @@
 [project]
-name = "expense_tracker_mcp_server"
+name = "expense_tracker"
 version = "0.1.0"
 description = "A server for tracking expenses using MCP."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "aiosqlite>=0.21.0",
     "fastmcp>=2.12.4",
+    "loguru>=0.7.3",
+    "nest-asyncio>=1.6.0",
 ]
 
 [dependency-groups]
+dev = [
+    "mcp[cli]>=1.17.0",
+]
 quality = [
     "black>=25.9.0",
     "isort>=6.1.0",
@@ -24,9 +30,18 @@ test = [
 
 [tool.isort]
 profile = "black"
-src_paths = ["expense_tracker_mcp_server"]
+src_paths = ["expense_tracker"]
 honor_noqa = true
 
 [tool.pylint]
-#ignore-paths = "./expense_tracker_mcp_server/tests"
+#ignore-paths = "./expense_tracker/tests"
 fail-under = '9.0'
+
+[tool.mypy]
+ignore_missing_imports = true
+explicit_package_bases = true
+
+exclude = [
+    "WORKSPACE",
+    "venv"
+]

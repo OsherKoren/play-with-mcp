@@ -2,19 +2,21 @@
 
 import random
 import sqlite3
+from calendar import monthrange
 from datetime import date, timedelta
+from pathlib import Path
+
+DB_PATH = Path("expense_tracker/resources/expenses.db")
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 # Connect to (or create) SQLite database
-conn = sqlite3.connect("expense_tracker_mcp_server/resources/expenses.db")
+conn = sqlite3.connect(DB_PATH)
 cursor = conn.cursor()
 
-# Drop table if it exists
-cursor.execute("DROP TABLE IF EXISTS expenses")
-
-# Create the expenses table
+# Create the expenses table if it doesn’t exist
 cursor.execute(
     """
-CREATE TABLE expenses (
+CREATE TABLE IF NOT EXISTS expenses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date TEXT NOT NULL,
     category TEXT NOT NULL,
@@ -34,17 +36,29 @@ categories = {
     "Shopping": ["Clothes", "Electronics", "Books"],
 }
 
-# Generate 20 demo expenses for October 2025
-start_date = date(2025, 10, 1)
-demo_expenses = []
 
-for i in range(20):
-    random_category = random.choice(list(categories.keys()))
-    description = random.choice(categories[random_category])
-    random_day = start_date + timedelta(days=random.randint(0, 29))
-    amount = round(random.uniform(10, 250), 2)
+def generate_expenses_for_month(year: int, month: int, count: int = 20):
+    """Generate random expense entries for a given month."""
 
-    demo_expenses.append((str(random_day), random_category, description, amount))
+    start_date = date(year, month, 1)
+    _, days_in_month = monthrange(year, month)
+
+    data = []
+    for _ in range(count):
+        random_category = random.choice(list(categories.keys()))
+        description = random.choice(categories[random_category])
+        random_day = start_date + timedelta(days=random.randint(0, days_in_month - 1))
+        amount = round(random.uniform(10, 250), 2)
+        data.append((str(random_day), random_category, description, amount))
+    return data
+
+
+# Generate demo data for August, September, October 2025 (20 rows each)
+demo_expenses = (
+    generate_expenses_for_month(2025, 8)
+    + generate_expenses_for_month(2025, 9)
+    + generate_expenses_for_month(2025, 10)
+)
 
 # Insert demo data
 cursor.executemany(
@@ -57,10 +71,9 @@ VALUES (?, ?, ?, ?)
 
 conn.commit()
 
-# Verify results
+# Verify results (show first 10 rows)
 print("✅ Demo 'expenses' table created successfully!\n")
-print("Inserted rows:")
-for row in cursor.execute("SELECT * FROM expenses ORDER BY date"):
+for row in cursor.execute("SELECT * FROM expenses ORDER BY date LIMIT 10"):
     print(row)
 
 conn.close()
