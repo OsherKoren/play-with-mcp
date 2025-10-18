@@ -23,37 +23,31 @@ from expense_tracker.resources.connection import conn
 
 async def select_total_expenses_for_month(month: int) -> float:
     """Return the total expenses for a given month from the SQLite database."""
-    c = conn
-    if c is None:
-        raise RuntimeError("Database connection is not initialized")
-
-    async with c:
-        c.row_factory = aiosqlite.Row
+    assert conn, "Database connection is not initialized."
+    async with conn:
+        conn.row_factory = aiosqlite.Row
         month_str = f"{month:02d}"
-        cursor = await c.execute(
+        cursor = await conn.execute(
             """
             SELECT SUM(amount) as total
             FROM expenses
             WHERE strftime('%m', date) = ?;
             """,
-            (month_str,),
+            (month_str),
         )
         row = await cursor.fetchone()
-        return row["total"] if row["total"] is not None else 0.0
+        return row["total"] if row is not None else 0.0
 
 
 async def select_total_expenses_for_month_and_category(
     month: int, category: str
 ) -> float:
     """Return the total expenses for a given month and category from the SQLite database."""
-    c = conn
-    if c is None:
-        raise RuntimeError("Database connection is not initialized")
-
-    async with c:
-        c.row_factory = aiosqlite.Row
+    assert conn, "Database connection is not initialized."
+    async with conn:
+        conn.row_factory = aiosqlite.Row
         month_str = f"{month:02d}"
-        cursor = await c.execute(
+        cursor = await conn.execute(
             """
             SELECT SUM(amount) as total
             FROM expenses
@@ -62,4 +56,4 @@ async def select_total_expenses_for_month_and_category(
             (month_str, category),
         )
         row = await cursor.fetchone()
-        return row["total"] if row["total"] is not None else 0.0
+        return row["total"] if row is not None else 0.0
