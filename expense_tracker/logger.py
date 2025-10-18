@@ -8,8 +8,9 @@ from loguru import logger as log
 log.remove()  # Remove default logger
 
 log_level = os.environ.get("LOG_LEVEL", "DEBUG").upper()
+
 log.add(
-    sys.stderr,
+    sys.stdout,
     level=log_level,
     colorize=True,
     format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
