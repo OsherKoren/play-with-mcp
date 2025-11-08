@@ -6,8 +6,8 @@ from contextlib import asynccontextmanager
 
 from fastmcp import FastMCP
 
+from expense_tracker.db import connection
 from expense_tracker.logger import log
-from expense_tracker.resources import connection
 
 
 @asynccontextmanager

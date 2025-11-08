@@ -9,11 +9,14 @@ original behavior and has a matching prompt generator and a small
 with a prompt for downstream AI analysis.
 """
 
+# https://www.youtube.com/watch?v=XXh-lrWTMeQ
+# https://github.com/XamHans/mcp-course/blob/master/my_server.py
+
 from fastmcp import FastMCP
 
 from expense_tracker.lifespan import mcp_lifespan
-from expense_tracker.prompts.templates import build_prompt
-from expense_tracker.resources import queries
+from expense_tracker.prompts import templates
+from expense_tracker.tools import queries
 
 mcp = FastMCP(
     name="expense_tracker",
@@ -29,13 +32,15 @@ mcp = FastMCP(
 @mcp.tool()
 async def get_total_expenses_for_month(month: int):
     """Return total expenses for the given month from the SQLite database."""
-    return await queries.select_total_expenses_for_month(month)
+    total = await queries.select_total_expenses_for_month(month)
+    return {"month": month, "total": total}
 
 
 @mcp.tool()
 async def get_total_expenses_for_month_and_category(month: int, category: str):
     """Return total expenses for the given month and category from the SQLite database."""
-    return await queries.select_total_expenses_for_month_and_category(month, category)
+    total = await queries.select_total_expenses_for_month_and_category(month, category)
+    return {"month": month, "category": category, "total": total}
 
 
 # -----------------------------------------------------
@@ -43,77 +48,56 @@ async def get_total_expenses_for_month_and_category(month: int, category: str):
 # -----------------------------------------------------
 
 
-@mcp.prompt()
-def prompt_total_for_month(month: int) -> str:
-    """Generate a prompt asking the AI to analyze the total expenses for a month."""
+@mcp.prompt(
+    name="prompt_total_for_month",
+    description="Generate a prompt asking the AI to get the total expenses for a month.",
+)
+async def prompt_total_for_month(month: int) -> str:
+    """Generate a prompt asking the AI to get the total expenses for a month."""
 
     month_str = f"{month:02d}"
-    return (
+    user_prompt = (
         f"You are given the total expenses for month {month_str}. "
         f"Provide an analytical analysis: summarize the total, compare to typical ranges, "
         "highlight possible causes and give 2-3 actionable suggestions."
     )
+    return templates.build_prompt(user_prompt=user_prompt)
 
 
-@mcp.prompt()
-def prompt_total_for_month_and_category(month: int, category: str) -> str:
-    """Generate a prompt asking the AI to analyze the total expenses for a month and category."""
+@mcp.prompt(
+    name="prompt_total_for_month_and_category",
+    description="Generate a prompt asking the AI to get the total expenses for a month "
+    "and category.",
+)
+async def prompt_total_for_month_and_category(month: int, category: str) -> str:
+    """Generate a prompt asking the AI to get the total expenses for a month and category."""
     month_str = f"{month:02d}"
-    return (
+    user_prompt = (
         f"You are given the total expenses for category '{category}' in month {month_str}. "
         f"Provide an analytical analysis: explain whether this spending is expected, "
         "identify trends or anomalies within the category, and suggest ways to optimize."
     )
+    return templates.build_prompt(user_prompt=user_prompt)
 
 
 # -----------------------------------------------------
-# Analysis Tools
+# Resources
 # -----------------------------------------------------
 
-
-@mcp.tool()
-async def analyze_total_for_month(month: int):
-    """Combine database query and prompt generation for a month-wide analysis."""
-
-    total = await queries.select_total_expenses_for_month(month)
-    user_prompt = prompt_total_for_month(month)
-    full_prompt = build_prompt(user_prompt)
-    return {"month": month, "total": total, "prompt": full_prompt}
-
-
-@mcp.tool()
-async def analyze_total_for_month_and_category(month: int, category: str):
-    """Combine query and prompt generation for a month+category analysis."""
-    total = await queries.select_total_expenses_for_month_and_category(month, category)
-    user_prompt = prompt_total_for_month_and_category(month, category)
-    full_prompt = build_prompt(user_prompt)
-    return {"month": month, "category": category, "total": total, "prompt": full_prompt}
-
-
-# --- Backwards-compatible general prompt (kept for convenience) ---
-
-# @mcp.prompt()
-# def analyze_expenses_prompt() -> str:
+# @mcp.resource(uri="file///resources//latest-report.json", description="Latest expense
+# report in JSON format.")
+# def get_latest_report():
+#     """Get the latest expense report from the packaged resource or the local resources file.
+#
+#     Returns:
+#         A dict parsed from latest_report.json.
 #     """
-#     General prompt instructing the AI to analyze total expenses by category.
-#     """
-#     return (
-#         "Please provide an analysis of total expenses by category "
-#         "for all available months. Highlight which categories have "
-#         "the highest spending and any patterns."
-#     )
-
-
-# -----------------------------------------------------
-# (Optional) Static Resources
-# -----------------------------------------------------
-
-
-@mcp.resource("expenses://metadata")
-def get_metadata():
-    """Optional example of a static resource."""
-    return {
-        "name": "Expense Tracker",
-        "description": "MCP toolset for analyzing expense data by month and category.",
-        "version": "1.0.0",
-    }
+#     res_name = "latest_report.json"
+#     try:
+#         with open_text("expense_tracker.resources", res_name) as f:
+#             return json.load(f)
+#     except FileNotFoundError:
+#         # Fallback: read from file relative to this module (development mode)
+#         base = Path(__file__).resolve().parent / "resources" / res_name
+#         with open(base, "r", encoding="utf-8") as f:
+#             return json.load(f)

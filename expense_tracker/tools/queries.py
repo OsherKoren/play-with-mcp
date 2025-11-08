@@ -18,11 +18,12 @@ Usage notes:
 """SQL queries for the expense tracker MCP server."""
 import aiosqlite
 
-from expense_tracker.resources.connection import conn
+from expense_tracker.db import connection
 
 
 async def select_total_expenses_for_month(month: int) -> float:
     """Return the total expenses for a given month from the SQLite database."""
+    conn: aiosqlite.Connection = connection.conn
     assert conn, "Database connection is not initialized."
     async with conn:
         conn.row_factory = aiosqlite.Row
@@ -30,7 +31,7 @@ async def select_total_expenses_for_month(month: int) -> float:
         cursor = await conn.execute(
             """
             SELECT SUM(amount) as total
-            FROM expenses
+            FROM tbl_expenses
             WHERE strftime('%m', date) = ?;
             """,
             (month_str),
@@ -43,6 +44,7 @@ async def select_total_expenses_for_month_and_category(
     month: int, category: str
 ) -> float:
     """Return the total expenses for a given month and category from the SQLite database."""
+    conn: aiosqlite.Connection = connection.conn
     assert conn, "Database connection is not initialized."
     async with conn:
         conn.row_factory = aiosqlite.Row
@@ -50,7 +52,7 @@ async def select_total_expenses_for_month_and_category(
         cursor = await conn.execute(
             """
             SELECT SUM(amount) as total
-            FROM expenses
+            FROM tbl_expenses
             WHERE strftime('%m', date) = ? AND category = ?;
             """,
             (month_str, category),

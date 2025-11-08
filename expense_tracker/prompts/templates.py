@@ -1,6 +1,7 @@
 # !/usr/bin/env python
 
 """Templates for prompts used in the MCP server."""
+from fastmcp.prompts.prompt import FunctionPrompt
 
 SYSTEM_PROMPT = """
 You are a helpful personal finance assistant for a bank's customers.

@@ -8,7 +8,6 @@ dependencies = [
     "aiosqlite>=0.21.0",
     "fastmcp>=2.12.4",
     "loguru>=0.7.3",
-    "nest-asyncio>=1.6.0",
 ]
 
 [dependency-groups]
