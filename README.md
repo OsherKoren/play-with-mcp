@@ -26,13 +26,21 @@ Make sure you have **Python 3.13+**.
 Generate a small SQLite database for testing (3 months of sample expenses):
 
 ```py
-python ./setup_db.py
+python ./setup/01_generate_db.py
 ```
 This creates:
-expense_tracker/resources/expenses.db
+`expense_tracker/db/expenses.db` with sample data in tbl_expenses.
+
+## 3. Generate Demo Report
+
+```py
+python ./setup/02_generate_monthly_expenses_report.py
+```
+This creates:
+`expense_tracker/resources/monthely_top_categories.json` report file.
 
 
-## 3. Run the MCP Server Locally
+## 4. Run the MCP Server Locally
 
 ```bash
   PYTHONPATH=. uv run --with fastmcp fastmcp run expense_tracker/server.py
@@ -67,8 +75,8 @@ INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 2025-10-25 13:11:14 | INFO     | expense_tracker.lifespan:mcp_lifespan:16 - 🚀 Starting up the MCP server...
 ```
 
-## 4. Connect with Claude Desktop
-1. Configure Claude Desktop to connect to your local MCP server:
+## 5. Connect with Claude Desktop
+5.1. Configure Claude Desktop to connect to your local MCP server:
 ```bash
   fastmcp install claude-desktop ./expense_tracker/server.py
 ```
@@ -83,14 +91,14 @@ On Windows you can find the generated claude_desktop_config.json here:
 C:\Users\myuser\AppData\Roaming\Claude
 ```
 
-1. Open **Claude Desktop**.
-2. Go to **Settings** > **MCP Servers**.
-3. Add a new server:
-4. Name: `Expense Tracker`
+5.2. Open **Claude Desktop**.
+5.3. Go to **Settings** > **MCP Servers**.
+5.3. Add a new server:
+5.4. Name: `Expense Tracker`
    URL: `http://localhost:8000/mcp`
 
 
-5. Connecting via NPX (quick, no-install run)
+## 6. Connecting via NPX (quick, no-install run)
 
 You can run the official MCP Inspector directly with `npx` (this downloads and runs the Inspector package temporarily). This is the fastest way to open the Inspector UI and launch your MCP server from the same command.
 

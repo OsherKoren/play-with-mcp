@@ -6,7 +6,7 @@ from calendar import monthrange
 from datetime import date, timedelta
 from pathlib import Path
 
-DB_PATH = Path("expense_tracker/db/expenses.db")
+DB_PATH = Path("../expense_tracker/db/expenses.db")
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 # Connect to (or create) SQLite database

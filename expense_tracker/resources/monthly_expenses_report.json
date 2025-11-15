@@ -1,0 +1,91 @@
+{
+  "report_name": "monthly_expenses_report",
+  "last_updated": "2025-11-15",
+  "2025-10": {
+    "total": "2302.59",
+    "per_category": [
+      {
+        "category": "Shopping",
+        "total": "653.98"
+      },
+      {
+        "category": "Food",
+        "total": "588.24"
+      },
+      {
+        "category": "Transport",
+        "total": "507.78"
+      },
+      {
+        "category": "Utilities",
+        "total": "270.46"
+      },
+      {
+        "category": "Entertainment",
+        "total": "160.86"
+      },
+      {
+        "category": "Health",
+        "total": "121.27"
+      }
+    ]
+  },
+  "2025-09": {
+    "total": "2968.08",
+    "per_category": [
+      {
+        "category": "Transport",
+        "total": "834.95"
+      },
+      {
+        "category": "Shopping",
+        "total": "521.42"
+      },
+      {
+        "category": "Utilities",
+        "total": "464.61"
+      },
+      {
+        "category": "Entertainment",
+        "total": "459.01"
+      },
+      {
+        "category": "Food",
+        "total": "350.41"
+      },
+      {
+        "category": "Health",
+        "total": "337.68"
+      }
+    ]
+  },
+  "2025-08": {
+    "total": "2352.67",
+    "per_category": [
+      {
+        "category": "Transport",
+        "total": "863.44"
+      },
+      {
+        "category": "Food",
+        "total": "637.30"
+      },
+      {
+        "category": "Shopping",
+        "total": "443.49"
+      },
+      {
+        "category": "Utilities",
+        "total": "183.42"
+      },
+      {
+        "category": "Entertainment",
+        "total": "149.69"
+      },
+      {
+        "category": "Health",
+        "total": "75.33"
+      }
+    ]
+  }
+}
