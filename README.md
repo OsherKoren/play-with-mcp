@@ -94,8 +94,7 @@ C:\Users\myuser\AppData\Roaming\Claude
 5.2. Open **Claude Desktop**.
 5.3. Go to **Settings** > **MCP Servers**.
 5.3. Add a new server:
-5.4. Name: `Expense Tracker`
-   URL: `http://localhost:8000/mcp`
+5.4. Name: `Expense Tracker` URL: `http://localhost:8000/mcp`
 
 
 ## 6. Connecting via NPX (quick, no-install run)

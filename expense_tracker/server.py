@@ -18,6 +18,7 @@ from pydantic import ValidationError
 from expense_tracker.lifespan import mcp_lifespan
 from expense_tracker.logger import log
 from expense_tracker.prompts import templates
+from expense_tracker.resources.io import read_json_resource
 from expense_tracker.resources.models import MonthlyCategoriesReport
 from expense_tracker.tools import queries
 
@@ -91,48 +92,38 @@ async def prompt_total_for_month_and_category(month: int, category: str) -> str:
     name="summarize_top_expenses",
     description="Build a prompt that summarizes the month's expenses using the monthly_expenses_report resource.",
 )
-async def summarize_top_expenses_prompt(month: str | None = None) -> str:
+async def summarize_top_expenses_prompt() -> str:
     """Build a model prompt using the `monthly_expenses_report` resource.
-
-    Args:
-        month: optional month key in YYYY-MM format. If omitted, the latest
-            month available in the report is used.
 
     Returns:
         A full prompt string (system + user) ready to send to the model.
     """
-    # # Load the report resource (may return a Pydantic model or a raw dict)
-    # report = get_monthly_expenses_report()
-    #
-    # # Normalize to a plain dict of months -> blocks
-    # if hasattr(report, "months"):
-    #     # Pydantic model: MonthlyCategoriesReport
-    #     months_map = report.months
-    # else:
-    #     months_map = report
-    #
-    # if month is None:
-    #     # pick the first month key (months are stored in descending order)
-    #     month = next(iter(months_map)) if months_map else None
-    #
-    # if not month or month not in months_map:
-    #     user_prompt = "No data available for the requested month."
-    #     return templates.build_prompt(user_prompt=user_prompt)
-    #
-    # month_block = months_map[month]
-    # # month_block may be a Pydantic MonthBlock or a dict
-    # if hasattr(month_block, "per_category"):
-    #     items = month_block.per_category
-    # else:
-    #     items = month_block.get("per_category") or month_block.get("top_categories") or []
-    #
-    # expenses_json = json.dumps(items, ensure_ascii=False)
 
-    user_prompt = (
-        "Given monthly expenses report resource in JSON, extract the top three expenses. "
-        "Return them as a numbered list including category and amount. "
-        "Provide a brief insight summary at the end."
-    )
+    raw = read_json_resource("monthly_expenses_report.json")
+
+    user_prompt = f"""Given monthly expenses report in the JSON below:
+
+        === MONTHLY EXPENSES REPORT ===
+            {raw}
+        ========================
+
+        extract the top three expenses.
+        Return them as a numbered list including category and amount.
+        Provide a brief insight summary at the end.
+
+        Summarize and analyze the report and include:
+
+        **Top Three Expenses:**
+        Month: __________
+        1. Category: __________, Amount: __________
+        2. Category: __________, Amount: __________
+        3. Category: __________, Amount: __________
+
+        **Spending Trends:**
+        - Identify any noticeable trends in spending across different months.
+        - Highlight categories with significant increases or decreases.
+
+    """
     return templates.build_prompt(user_prompt=user_prompt)
 
 
@@ -159,11 +150,7 @@ def get_monthly_expenses_report():
         A Pydantic model instance when validation succeeds, otherwise the raw dict.
     """
 
-    file_path = (
-        Path(__file__).resolve().parent / "resources/monthly_expenses_report.json"
-    )
-    with open(file_path, encoding="utf-8") as f:
-        raw = json.load(f)
+    raw = read_json_resource("monthly_expenses_report.json")
 
     try:
         return MonthlyCategoriesReport.from_raw_dict(raw)
