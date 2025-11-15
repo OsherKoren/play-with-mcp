@@ -1,7 +1,49 @@
 [project]
-name = "play-with-mcp"
+name = "expense_tracker"
 version = "0.1.0"
-description = "Add your description here"
+description = "A server for tracking expenses using MCP."
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "aiosqlite>=0.21.0",
+    "fastmcp>=2.12.4",
+    "loguru>=0.7.3",
+]
+
+[dependency-groups]
+dev = [
+    "mcp[cli]>=1.17.0",
+]
+quality = [
+    "black>=25.9.0",
+    "isort>=6.1.0",
+    "jsonschema>=4.25.1",
+    "mypy>=1.18.2",
+    "pre-commit>=4.3.0",
+    "pylint>=3.3.9",
+]
+test = [
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+]
+
+[tool.isort]
+profile = "black"
+src_paths = ["expense_tracker"]
+honor_noqa = true
+
+[tool.pylint]
+#ignore-paths = "./expense_tracker/tests"
+fail-under = '9.0'
+
+[tool.mypy]
+ignore_missing_imports = true
+explicit_package_bases = true
+
+exclude = [
+    "WORKSPACE",
+    "venv"
+]
+
+[tool.pytest.ini_options]
+addopts = "-vv tests --cov=expense_tracker --cov-report=term-missing --cov-fail-under=80"
