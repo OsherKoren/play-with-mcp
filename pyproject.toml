@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A server for tracking expenses using MCP."
 readme = "README.md"
 requires-python = ">=3.13"
+
 dependencies = [
     "aiosqlite>=0.21.0",
     "fastmcp>=2.12.4",

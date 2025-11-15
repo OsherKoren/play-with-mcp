@@ -14,11 +14,18 @@ This MCP (Model Context Protocol) server lets AI assistants (like **Claude Deskt
 Make sure you have **Python 3.13+**.
 
 ```bash
-  poetry add fastmcp loguru
+  pip install -U poetry && poetry install
 ```
-# or
+
+# or via uv
 ```bash
-  uv add fastmcp loguru
+  uv sync
+```
+
+For development, install extra dependencies:
+
+```bash
+   uv sync --all-groups
 ```
 
 ## 2. Create Demo Expenses
