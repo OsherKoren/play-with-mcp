@@ -44,3 +44,6 @@ exclude = [
     "WORKSPACE",
     "venv"
 ]
+
+[tool.pytest.ini_options]
+addopts = "-vv tests --cov=expense_tracker --cov-report=term-missing --cov-fail-under=80"

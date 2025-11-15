@@ -13,9 +13,6 @@ Usage notes:
   these functions; they raise RuntimeError if the connection is not initialized.
 """
 
-# !/usr/bin/env python
-
-"""SQL queries for the expense tracker MCP server."""
 import aiosqlite
 
 from expense_tracker.db import connection

@@ -51,6 +51,13 @@ repos:
     hooks:
       - id: pylint
         name: pylint
-        entry: uv run pylint --output-format=text --reports=y expense_tracker
+        entry: uv run pylint expense_tracker --output-format=text --reports=y
         language: system
-        types: [python]
+        pass_filenames: false
+
+      - id: pytest
+        name: pytest
+        entry: python -m pytest -q
+        language: system
+        pass_filenames: false
+        always_run: true

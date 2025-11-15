@@ -9,9 +9,6 @@ original behavior and has a matching prompt generator and a small
 with a prompt for downstream AI analysis.
 """
 
-import json
-from pathlib import Path
-
 from fastmcp import FastMCP
 from pydantic import ValidationError
 
@@ -88,23 +85,25 @@ async def prompt_total_for_month_and_category(month: int, category: str) -> str:
     return templates.build_prompt(user_prompt=user_prompt)
 
 
-@mcp.prompt(
-    name="summarize_top_expenses",
-    description="Build a prompt that summarizes the month's expenses using the monthly_expenses_report resource.",
-)
-async def summarize_top_expenses_prompt() -> str:
-    """Build a model prompt using the `monthly_expenses_report` resource.
+def build_summarize_prompt(month: str | None = None) -> str:
+    """Synchronously build the prompt string for summarizing monthly expenses.
 
-    Returns:
-        A full prompt string (system + user) ready to send to the model.
+    This helper is separated from the decorated prompt so tests can call it
+    directly without needing to unwrap the MCP prompt wrapper.
     """
-
     raw = read_json_resource("monthly_expenses_report.json")
+
+    # If a specific month is requested, include only that block; otherwise include full report
+    month_block_text = raw
+    if month is not None:
+        month_block_text = {
+            k: v for k, v in raw.items() if k in ("report_name", "last_updated", month)
+        }
 
     user_prompt = f"""Given monthly expenses report in the JSON below:
 
         === MONTHLY EXPENSES REPORT ===
-            {raw}
+            {month_block_text}
         ========================
 
         extract the top three expenses.

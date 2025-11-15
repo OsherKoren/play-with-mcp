@@ -26,7 +26,7 @@ Make sure you have **Python 3.13+**.
 Generate a small SQLite database for testing (3 months of sample expenses):
 
 ```py
-python ./setup/01_generate_db.py
+python ./setup/generate_db.py
 ```
 This creates:
 `expense_tracker/db/expenses.db` with sample data in tbl_expenses.
@@ -34,7 +34,7 @@ This creates:
 ## 3. Generate Demo Report
 
 ```py
-python ./setup/02_generate_monthly_expenses_report.py
+python ./setup/generate_monthly_expenses_report.py
 ```
 This creates:
 `expense_tracker/resources/monthely_top_categories.json` report file.

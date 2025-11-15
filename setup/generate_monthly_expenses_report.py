@@ -22,7 +22,11 @@ DB_PATH = BASE_DIR / "expense_tracker" / "db" / "expenses.db"
 OUT_PATH = BASE_DIR / "expense_tracker" / "resources" / "monthly_expenses_report.json"
 
 # SQL helpers
-ALL_MONTHS_SQL = "SELECT DISTINCT strftime('%Y-%m', date) AS month FROM tbl_expenses ORDER BY month DESC"
+ALL_MONTHS_SQL = (
+    "SELECT DISTINCT strftime('%Y-%m', date) AS month "
+    "FROM tbl_expenses "
+    "ORDER BY month DESC"
+)
 TOTAL_FOR_MONTH_SQL = (
     "SELECT COALESCE(SUM(amount), 0) FROM tbl_expenses WHERE strftime('%Y-%m', date)=?"
 )
