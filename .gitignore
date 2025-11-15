@@ -8,3 +8,6 @@ wheels/
 .idea/
 # Virtual environments
 .venv
+/WORKSPACE/
+/nul
+/.coverage
