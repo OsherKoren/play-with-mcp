@@ -1,4 +1,4 @@
-# Expense Tracker MCP Server
+# Expense Tracker MCP Server Demo
 
 This MCP (Model Context Protocol) server lets AI assistants (like **Claude Desktop**) access expense data from your local SQLite database and answer questions like:
 
@@ -96,6 +96,55 @@ Successfully installed 'server' in Claude Desktop
 On Windows you can find the generated claude_desktop_config.json here:
 ```
 C:\Users\myuser\AppData\Roaming\Claude
+```
+
+Output example:
+```json
+{
+  "mcpServers": {
+    "server": {
+      "command": "uv",
+      "args": [
+	"--directory",
+        "C:\\Users\\oshra\\PycharmProjects\\play-with-mcp",
+        "run",
+        "--with",
+        "fastmcp",
+        "fastmcp",
+        "run",
+        "expense_tracker/server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "."
+      },
+      "transport": "stdio",
+      "type": null,
+      "cwd": null,
+      "timeout": null,
+      "description": null,
+      "icon": null,
+      "authentication": null
+    }
+  }
+}
+```
+
+Or if using Docker image for local MCP server, see the Dockerfile.
+The config file should look like:
+```json
+{
+  "mcpServers": {
+     "expense_tracker": {
+         "command": "docker",
+          "args": [
+            "run",
+            "-i",
+            "--rm",
+            "expense-tracker-mcp"
+      ]
+    }
+  }
+}
 ```
 
 5.2. Open **Claude Desktop**.
